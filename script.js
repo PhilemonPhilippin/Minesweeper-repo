@@ -24,8 +24,16 @@ while (counter < 10) {
   }
 }
 
+// Ajout de la lettre B pour chaque bombe dans la grille du jeu
 bombIndexes.forEach((bombIndex) => {
   const bomb = document.getElementById(`${bombIndex}`);
   bomb.textContent = "B";
   bomb.classList.add("bomb");
 });
+
+// Ajout du chiffre(string) 1 pour chaque case à côté d'une bombe
+// TODO : Faire une méthode pour compter le nombre de bombes adjacentes à une case donnée
+
+// Ajout du chiffre(string) 2 pour chaque case à côté de deux bombes
+
+// etc. jusqu a 8 bombes
