@@ -46,7 +46,7 @@ function CreateBombList() {
 function AddBombsToLayout(bombList) {
   bombList.forEach((bombIndex) => {
     const bomb = document.getElementById(`${bombIndex}`);
-    bomb.textContent = BOMB;
+    bomb.textContent = "💣";
     bomb.classList.add("bomb");
     gameContentArray[bombIndex] = BOMB;
   });
