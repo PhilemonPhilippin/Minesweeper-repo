@@ -1,0 +1,21 @@
+body {
+  box-sizing: border-box;
+}
+
+h1 {
+  text-align: center;
+}
+#game-grid {
+  justify-content: center;
+  display: grid;
+  grid-template-columns: 35px 35px 35px 35px 35px 35px 35px 35px 35px;
+  grid-template-rows: 35px 35px 35px 35px 35px 35px 35px 35px 35px;
+  gap: 3px;
+}
+
+.square {
+  background-color: grey;
+}
+.bomb {
+  background-color: red;
+}
