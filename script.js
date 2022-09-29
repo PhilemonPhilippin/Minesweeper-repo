@@ -52,11 +52,6 @@ function AddBombsToLayout(bombList) {
   });
 }
 
-// Quelles cases sont adjacentes à une case donnée ?
-// Ligne précédente : case - 10, case - 9, case - 8
-// Ligne-même : case - 1, case + 1
-// Ligne suivante : case + 8, case + 9, case + 10
-
 // Pour une case donnée, compter combien de cases voisines incluent une Bombe
 function GetClue(squareIndex) {
   let bombCounter = 0;
@@ -71,13 +66,7 @@ function GetClue(squareIndex) {
   return bombCounter.toString();
 }
 
-// Une case donnée inclue-t-elle une Bombe
-// function IsBomb(squareNeighbour) {
-//   const neighbour = document.getElementById(`${squareNeighbour}`);
-//   return neighbour.textContent === BOMB;
-// }
 function IsBomb(squareNeighbour) {
-  // const neighbour = document.getElementById(`${squareNeighbour}`);
   // Si dans mon tableau se trouve une bombe au même index que cette case voisine => return true
   return gameContentArray[squareNeighbour] === BOMB;
 }
