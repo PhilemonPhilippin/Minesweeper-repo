@@ -9,9 +9,43 @@ AddBombsToLayout(bombList);
 // Je check que tout fonctionne bien et met entre parentheses le nombre de bombes voisines
 for (let i = 0; i < gameContentArray.length; i++) {
   const square = document.getElementById(`${i}`);
-  square.textContent += `(${GetClue(i)})`;
+  square.addEventListener(
+    "click",
+    () => {
+      HandleSquareClick(i);
+    },
+    false
+  );
 }
+
 // Fin
+
+// Affiche entre parenthèses le nombre de bombes voisines de la case cliquée
+function AddClueToText(square) {
+  document.getElementById(square).textContent += `(${GetClue(square)})`;
+}
+
+// Affiche une explosion si on clique sur une bombe et return true
+function IfBombAddExplosion(square) {
+  let isBomb = false;
+  if (bombList.includes(square)) {
+    document.getElementById(square).textContent += "💥";
+    isBomb = true;
+  }
+  return isBomb;
+}
+// Un EventHandler qui traite le clic d'une cause
+function HandleSquareClick(square) {
+  if (IfBombAddExplosion(square)) {
+    console.log("You exploded");
+  } else {
+    AddClueToText(square);
+  }
+}
+
+function LogHello() {
+  console.log("Hello");
+}
 
 // Construire une grille visuelle de 81 cases
 function CreateLayoutGrid() {
