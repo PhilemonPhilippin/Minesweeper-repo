@@ -39,16 +39,77 @@ function IfBombAddExplosion(squareIndex) {
   return isBomb;
 }
 // Un EventHandler qui traite le clic d'une cause
-function HandleSquareClick(square) {
-  if (IfBombAddExplosion(square)) {
+function HandleSquareClick(squareIndex) {
+  if (IfBombAddExplosion(squareIndex)) {
     console.log("You exploded");
   } else {
-    AddClueToText(square);
+    AddClueToText(squareIndex);
+    RevealNeighbourSquares(squareIndex);
   }
 }
 
-function LogHello() {
-  console.log("Hello");
+// function RevealNeighbourSquares(squareIndex) {
+//   if (IsClueZero(squareIndex) === true) {
+//     const neighbours = GetNeighbours(squareIndex);
+//     let zerosFoundList = [];
+
+//     neighbours.forEach((neighbour) => {
+//       if (IsClueZero(neighbour) && IsBomb(neighbour) === false) {
+//         AddClueToText(neighbour);
+//         zerosFoundList.push(neighbour);
+//       }
+//     });
+//     if (zerosFoundList.length > 0) {
+//       const secondZerosFoundList = RevealAgain(zerosFoundList);
+//       if (secondZerosFoundList.length > 0) {
+//         const thirdZerosFoundList = RevealAgain(secondZerosFoundList);
+//         if (thirdZerosFoundList.length > 0) {
+//           RevealAgain(thirdZerosFoundList);
+//         }
+//       }
+//     }
+//   }
+// }
+
+function RevealNeighbourSquares(squareIndex) {
+  if (IsClueZero(squareIndex) === true) {
+    const neighbours = GetNeighbours(squareIndex);
+    let zerosFoundList = [];
+
+    neighbours.forEach((neighbour) => {
+      if (IsClueZero(neighbour) && IsBomb(neighbour) === false) {
+        AddClueToText(neighbour);
+        zerosFoundList.push(neighbour);
+      }
+    });
+    while (zerosFoundList.length > 0) {
+      zerosFoundList = RevealAgain(zerosFoundList);
+    }
+  }
+}
+
+function RevealAgain(zerosFoundList) {
+  const secondZerosFoundList = [];
+  zerosFoundList.forEach((zero) => {
+    let neighbours = GetNeighbours(zero);
+    neighbours = neighbours.filter(
+      (neighbour) =>
+        document.getElementById(neighbour).classList.contains("clue") === false
+    );
+
+    neighbours.forEach((neighbour) => {
+      if (IsClueZero(neighbour) && IsBomb(neighbour) === false) {
+        AddClueToText(neighbour);
+        secondZerosFoundList.push(neighbour);
+      }
+    });
+  });
+  const zerosWithNoDuplicate = [...new Set(secondZerosFoundList)];
+  return zerosWithNoDuplicate;
+}
+
+function IsClueZero(squareIndex) {
+  return GetClue(squareIndex) === 0;
 }
 
 // Construire une grille visuelle de 81 cases
@@ -117,12 +178,12 @@ function GetClue(squareIndex) {
     }
   });
 
-  return bombCounter.toString();
+  return bombCounter;
 }
 
-function IsBomb(squareNeighbour) {
-  // Si dans mon tableau se trouve une bombe au même index que cette case voisine => return true
-  return gameContentArray[squareNeighbour] === BOMB;
+// Si dans mon tableau se trouve une bombe au même index que cette case => return true
+function IsBomb(squareIndex) {
+  return gameContentArray[squareIndex] === BOMB;
 }
 
 // Fonction qui permet d'obtenir toutes les cases voisines d'une case donnée
