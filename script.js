@@ -3,12 +3,12 @@ const BOMB = "B";
 CreateLayoutGrid();
 const gameContentArray = [...Array(81)];
 const bombList = CreateBombList();
-AddBombsToLayout(bombList);
+AddBombsToContentArray(bombList);
 // Mon programme commence ici
 // Début
 // Je check que tout fonctionne bien et met entre parentheses le nombre de bombes voisines
-for (let i = 0; i < gameContentArray.length; i++) {
-  const square = document.getElementById(`${i}`);
+for (let i = 0; i < 81; i++) {
+  const square = document.getElementById(i);
   square.addEventListener(
     "click",
     () => {
@@ -21,15 +21,19 @@ for (let i = 0; i < gameContentArray.length; i++) {
 // Fin
 
 // Affiche entre parenthèses le nombre de bombes voisines de la case cliquée
-function AddClueToText(square) {
-  document.getElementById(square).textContent += `(${GetClue(square)})`;
+function AddClueToText(squareIndex) {
+  const square = document.getElementById(squareIndex);
+  square.textContent = GetClue(squareIndex);
+  square.classList.add("clue");
 }
 
 // Affiche une explosion si on clique sur une bombe et return true
-function IfBombAddExplosion(square) {
+function IfBombAddExplosion(squareIndex) {
   let isBomb = false;
-  if (bombList.includes(square)) {
-    document.getElementById(square).textContent += "💥";
+  if (bombList.includes(squareIndex)) {
+    const square = document.getElementById(squareIndex);
+    square.textContent = "💥";
+    square.classList.add("bomb");
     isBomb = true;
   }
   return isBomb;
@@ -48,7 +52,7 @@ function LogHello() {
 }
 
 // Construire une grille visuelle de 81 cases
-function CreateLayoutGrid() {
+function DevCreateLayoutGrid() {
   const gameLayoutGrid = document.getElementById("game-grid");
   // Je crée 81 div avec class="square" et id="i"
   for (let i = 0; i < 81; i++) {
@@ -58,6 +62,16 @@ function CreateLayoutGrid() {
     // J'affiche l'index pour des raisons de développement
     square.textContent = `${i}`;
 
+    gameLayoutGrid.appendChild(square);
+  }
+}
+
+function CreateLayoutGrid() {
+  const gameLayoutGrid = document.getElementById("game-grid");
+  for (let i = 0; i < 81; i++) {
+    const square = document.createElement("div");
+    square.classList.add("square");
+    square.setAttribute("id", i);
     gameLayoutGrid.appendChild(square);
   }
 }
@@ -76,12 +90,18 @@ function CreateBombList() {
   return bombList;
 }
 
-// Ajout de la lettre B pour chaque bombe dans la grille du jeu (LAYOUT et )
-function AddBombsToLayout(bombList) {
+// Ajout pour chaque bombe dans la grille du jeu (LAYOUT et ARRAY)
+function DevAddBombsToLayout(bombList) {
   bombList.forEach((bombIndex) => {
     const bomb = document.getElementById(`${bombIndex}`);
     bomb.textContent = "💣";
     bomb.classList.add("bomb");
+    gameContentArray[bombIndex] = BOMB;
+  });
+}
+
+function AddBombsToContentArray() {
+  bombList.forEach((bombIndex) => {
     gameContentArray[bombIndex] = BOMB;
   });
 }

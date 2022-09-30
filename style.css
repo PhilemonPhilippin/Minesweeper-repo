@@ -16,6 +16,11 @@ h1 {
 .square {
   background-color: grey;
 }
+.clue {
+  background-color: green;
+  text-align: center;
+}
 .bomb {
   background-color: red;
+  text-align: center;
 }
