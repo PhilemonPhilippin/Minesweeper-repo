@@ -4,6 +4,7 @@ CreateLayoutGrid();
 const gameContentArray = [...Array(81)];
 const bombList = CreateBombList();
 AddBombsToContentArray(bombList);
+
 // Mon programme commence ici
 // Début
 // Je check que tout fonctionne bien et met entre parentheses le nombre de bombes voisines
@@ -17,7 +18,6 @@ for (let i = 0; i < 81; i++) {
     false
   );
 }
-
 // Fin
 
 // Affiche entre parenthèses le nombre de bombes voisines de la case cliquée
@@ -32,7 +32,7 @@ function IfBombAddExplosion(squareIndex) {
   let isBomb = false;
   if (bombList.includes(squareIndex)) {
     const square = document.getElementById(squareIndex);
-    square.textContent = "💥";
+    square.textContent = "💣";
     square.classList.add("bomb");
     isBomb = true;
   }
@@ -48,40 +48,20 @@ function HandleSquareClick(squareIndex) {
   }
 }
 
-// function RevealNeighbourSquares(squareIndex) {
-//   if (IsClueZero(squareIndex) === true) {
-//     const neighbours = GetNeighbours(squareIndex);
-//     let zerosFoundList = [];
-
-//     neighbours.forEach((neighbour) => {
-//       if (IsClueZero(neighbour) && IsBomb(neighbour) === false) {
-//         AddClueToText(neighbour);
-//         zerosFoundList.push(neighbour);
-//       }
-//     });
-//     if (zerosFoundList.length > 0) {
-//       const secondZerosFoundList = RevealAgain(zerosFoundList);
-//       if (secondZerosFoundList.length > 0) {
-//         const thirdZerosFoundList = RevealAgain(secondZerosFoundList);
-//         if (thirdZerosFoundList.length > 0) {
-//           RevealAgain(thirdZerosFoundList);
-//         }
-//       }
-//     }
-//   }
-// }
-
+// Révéler tous les zéros voisins
 function RevealNeighbourSquares(squareIndex) {
   if (IsClueZero(squareIndex) === true) {
     const neighbours = GetNeighbours(squareIndex);
     let zerosFoundList = [];
-
+    // Pour chaque voisin du zéro trouvé je regarde si c'est un zéro sans être une bombe
+    // Si c'est le cas je l'ajoute à ma liste de zéros trouvés
     neighbours.forEach((neighbour) => {
       if (IsClueZero(neighbour) && IsBomb(neighbour) === false) {
         AddClueToText(neighbour);
         zerosFoundList.push(neighbour);
       }
     });
+    // Tant que ma liste de zéros trouvés n'est pas vide, je cherche les voisins de chaque membre de cette liste
     while (zerosFoundList.length > 0) {
       zerosFoundList = RevealAgain(zerosFoundList);
     }
@@ -90,13 +70,16 @@ function RevealNeighbourSquares(squareIndex) {
 
 function RevealAgain(zerosFoundList) {
   const secondZerosFoundList = [];
+  // Pour chaque zéro trouvé dans ma liste je trouve ses voisins
   zerosFoundList.forEach((zero) => {
     let neighbours = GetNeighbours(zero);
+    // Je retire de ma liste les voisins qui sont déjà révélés
     neighbours = neighbours.filter(
       (neighbour) =>
         document.getElementById(neighbour).classList.contains("clue") === false
     );
 
+    // Pour chaque voisin de ma liste je l'ajoute à ma nouvelle liste si c'est un zéro sans être une bombe
     neighbours.forEach((neighbour) => {
       if (IsClueZero(neighbour) && IsBomb(neighbour) === false) {
         AddClueToText(neighbour);
@@ -104,6 +87,7 @@ function RevealAgain(zerosFoundList) {
       }
     });
   });
+  // Je retire les doublons
   const zerosWithNoDuplicate = [...new Set(secondZerosFoundList)];
   return zerosWithNoDuplicate;
 }
@@ -113,22 +97,9 @@ function IsClueZero(squareIndex) {
 }
 
 // Construire une grille visuelle de 81 cases
-function DevCreateLayoutGrid() {
-  const gameLayoutGrid = document.getElementById("game-grid");
-  // Je crée 81 div avec class="square" et id="i"
-  for (let i = 0; i < 81; i++) {
-    const square = document.createElement("div");
-    square.classList.add("square");
-    square.setAttribute("id", `${i}`);
-    // J'affiche l'index pour des raisons de développement
-    square.textContent = `${i}`;
-
-    gameLayoutGrid.appendChild(square);
-  }
-}
-
 function CreateLayoutGrid() {
   const gameLayoutGrid = document.getElementById("game-grid");
+  // Je crée 81 div avec class="square" et id="i"
   for (let i = 0; i < 81; i++) {
     const square = document.createElement("div");
     square.classList.add("square");
@@ -151,16 +122,7 @@ function CreateBombList() {
   return bombList;
 }
 
-// Ajout pour chaque bombe dans la grille du jeu (LAYOUT et ARRAY)
-function DevAddBombsToLayout(bombList) {
-  bombList.forEach((bombIndex) => {
-    const bomb = document.getElementById(`${bombIndex}`);
-    bomb.textContent = "💣";
-    bomb.classList.add("bomb");
-    gameContentArray[bombIndex] = BOMB;
-  });
-}
-
+// Ajout de chaque bombe dans l'array du jeu
 function AddBombsToContentArray() {
   bombList.forEach((bombIndex) => {
     gameContentArray[bombIndex] = BOMB;
