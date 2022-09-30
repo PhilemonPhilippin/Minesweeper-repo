@@ -52,7 +52,27 @@ function HandleSquareClick(squareIndex) {
   } else {
     AddClueToText(squareIndex);
     RevealNeighbourSquares(squareIndex);
+    if (IsGameWon()) {
+      let userAnswer = prompt("You WON. Try again? 'y' for yes");
+      if (userAnswer === "y") {
+        ResetGame();
+      } else {
+        console.log("You WON");
+      }
+    }
   }
+}
+
+function IsGameWon() {
+  let isGameWon = true;
+  for (let i = 0; i < 81; i++) {
+    const square = document.getElementById(i);
+    const isSquareRevelead = square.classList.contains("clue");
+    if (IsBomb(i) === false && isSquareRevelead === false) {
+      isGameWon = false;
+    }
+  }
+  return isGameWon;
 }
 
 function ResetGame() {
