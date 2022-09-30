@@ -22,7 +22,7 @@ function AddEventListeners() {
   }
 }
 
-// Affiche entre parenthèses le nombre de bombes voisines de la case cliquée
+// Affiche le nombre de bombes voisines de la case cliquée
 function AddClueToText(squareIndex) {
   const square = document.getElementById(squareIndex);
   square.textContent = GetClue(squareIndex);
@@ -40,6 +40,7 @@ function IfBombAddExplosion(squareIndex) {
   }
   return isBomb;
 }
+
 // Un EventHandler qui traite le clic d'une cause
 function HandleSquareClick(squareIndex) {
   if (IfBombAddExplosion(squareIndex)) {
@@ -63,31 +64,6 @@ function HandleSquareClick(squareIndex) {
   }
 }
 
-function IsGameWon() {
-  let isGameWon = true;
-  for (let i = 0; i < 81; i++) {
-    const square = document.getElementById(i);
-    const isSquareRevelead = square.classList.contains("clue");
-    if (IsBomb(i) === false && isSquareRevelead === false) {
-      isGameWon = false;
-    }
-  }
-  return isGameWon;
-}
-
-function ResetGame() {
-  DeleteLayoutGrid();
-  StartGame();
-}
-
-function StartGame() {
-  CreateLayoutGrid();
-  gameContentArray = [...Array(81)];
-  bombList = CreateBombList();
-  AddBombsToContentArray(bombList);
-  AddEventListeners();
-}
-
 // Révéler tous les zéros voisins
 function RevealNeighbourSquares(squareIndex) {
   if (IsClueZero(squareIndex) === true) {
@@ -108,6 +84,7 @@ function RevealNeighbourSquares(squareIndex) {
   }
 }
 
+// Seconde méthode (pour éviter la récursivité)
 function RevealAgain(zerosFoundList) {
   const secondZerosFoundList = [];
   // Pour chaque zéro trouvé dans ma liste je trouve ses voisins
@@ -132,8 +109,53 @@ function RevealAgain(zerosFoundList) {
   return zerosWithNoDuplicate;
 }
 
+// Pour une case donnée, compter combien de cases voisines incluent une Bombe
+function GetClue(squareIndex) {
+  let bombCounter = 0;
+  let neighbours = GetNeighbours(squareIndex);
+
+  neighbours.forEach((neighbour) => {
+    if (IsBomb(neighbour)) {
+      bombCounter++;
+    }
+  });
+
+  return bombCounter;
+}
+
+// Si la case ne touche aucune bombe
 function IsClueZero(squareIndex) {
   return GetClue(squareIndex) === 0;
+}
+
+// Si le case inclue une bombe
+function IsBomb(squareIndex) {
+  return gameContentArray[squareIndex] === BOMB;
+}
+
+function IsGameWon() {
+  let isGameWon = true;
+  for (let i = 0; i < 81; i++) {
+    const square = document.getElementById(i);
+    const isSquareRevelead = square.classList.contains("clue");
+    if (IsBomb(i) === false && isSquareRevelead === false) {
+      isGameWon = false;
+    }
+  }
+  return isGameWon;
+}
+
+function StartGame() {
+  CreateLayoutGrid();
+  gameContentArray = [...Array(81)];
+  bombList = CreateBombList();
+  AddBombsToContentArray(bombList);
+  AddEventListeners();
+}
+
+function ResetGame() {
+  DeleteLayoutGrid();
+  StartGame();
 }
 
 // Construire une grille visuelle de 81 cases
@@ -175,25 +197,6 @@ function AddBombsToContentArray() {
   bombList.forEach((bombIndex) => {
     gameContentArray[bombIndex] = BOMB;
   });
-}
-
-// Pour une case donnée, compter combien de cases voisines incluent une Bombe
-function GetClue(squareIndex) {
-  let bombCounter = 0;
-  let neighbours = GetNeighbours(squareIndex);
-
-  neighbours.forEach((neighbour) => {
-    if (IsBomb(neighbour)) {
-      bombCounter++;
-    }
-  });
-
-  return bombCounter;
-}
-
-// Si dans mon tableau se trouve une bombe au même index que cette case => return true
-function IsBomb(squareIndex) {
-  return gameContentArray[squareIndex] === BOMB;
 }
 
 // Fonction qui permet d'obtenir toutes les cases voisines d'une case donnée
