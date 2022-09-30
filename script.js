@@ -1,24 +1,26 @@
 // Déclarations et mise en place
 const BOMB = "B";
-CreateLayoutGrid();
-const gameContentArray = [...Array(81)];
-const bombList = CreateBombList();
-AddBombsToContentArray(bombList);
+let gameContentArray = [];
+let bombList = [];
 
 // Mon programme commence ici
 // Début
-// Je check que tout fonctionne bien et met entre parentheses le nombre de bombes voisines
-for (let i = 0; i < 81; i++) {
-  const square = document.getElementById(i);
-  square.addEventListener(
-    "click",
-    () => {
-      HandleSquareClick(i);
-    },
-    false
-  );
-}
+StartGame();
 // Fin
+
+// Ajoute un EventListener à chaque case
+function AddEventListeners() {
+  for (let i = 0; i < 81; i++) {
+    const square = document.getElementById(i);
+    square.addEventListener(
+      "click",
+      () => {
+        HandleSquareClick(i);
+      },
+      false
+    );
+  }
+}
 
 // Affiche entre parenthèses le nombre de bombes voisines de la case cliquée
 function AddClueToText(squareIndex) {
@@ -41,11 +43,29 @@ function IfBombAddExplosion(squareIndex) {
 // Un EventHandler qui traite le clic d'une cause
 function HandleSquareClick(squareIndex) {
   if (IfBombAddExplosion(squareIndex)) {
-    console.log("You exploded");
+    let userAnswer = prompt("You exploded. Try again? 'y' for yes");
+    if (userAnswer === "y") {
+      ResetGame();
+    } else {
+      console.log("You lost");
+    }
   } else {
     AddClueToText(squareIndex);
     RevealNeighbourSquares(squareIndex);
   }
+}
+
+function ResetGame() {
+  DeleteLayoutGrid();
+  StartGame();
+}
+
+function StartGame() {
+  CreateLayoutGrid();
+  gameContentArray = [...Array(81)];
+  bombList = CreateBombList();
+  AddBombsToContentArray(bombList);
+  AddEventListeners();
 }
 
 // Révéler tous les zéros voisins
@@ -98,7 +118,10 @@ function IsClueZero(squareIndex) {
 
 // Construire une grille visuelle de 81 cases
 function CreateLayoutGrid() {
-  const gameLayoutGrid = document.getElementById("game-grid");
+  const game = document.getElementById("game");
+  const gameLayoutGrid = document.createElement("div");
+  gameLayoutGrid.setAttribute("id", "game-layout-grid");
+  game.appendChild(gameLayoutGrid);
   // Je crée 81 div avec class="square" et id="i"
   for (let i = 0; i < 81; i++) {
     const square = document.createElement("div");
@@ -106,6 +129,11 @@ function CreateLayoutGrid() {
     square.setAttribute("id", i);
     gameLayoutGrid.appendChild(square);
   }
+}
+
+function DeleteLayoutGrid() {
+  const gameLayoutGrid = document.getElementById("game-layout-grid");
+  gameLayoutGrid.remove();
 }
 
 // Construire une liste de 10 bombes avec l'indexe correspondant à chaque bombe
